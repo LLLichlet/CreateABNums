@@ -3,7 +3,7 @@ A simple calculator for guidance to craft nums 0-9 in _Create: Above and Beyond_
 
 Robustness is not guaranteed. Results for reference only.
 
-No copyright assigned. Feel free to use anywhere.
+[Public Domain](LICENSE). Feel free to use anywhere.
 
 ## Expected Results
 ```
