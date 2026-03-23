@@ -1,5 +1,5 @@
 # CreateABNums
-A simple calculator for guidance to craft nums 0-9 in Create: Above and Beyond.
+A simple calculator for guidance to craft nums 0-9 in _Create: Above and Beyond_.
 
 Robustness is not guaranteed. Results for reference only.
 
