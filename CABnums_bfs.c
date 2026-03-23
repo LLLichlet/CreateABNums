@@ -6,7 +6,7 @@ int add(int x, int y){return x+y;}
 int subtr(int x, int y){return x-y;}
 int mul(int x, int y){return x*y;}
 int div(int x, int y){return !y || x%y ? -1: x/y;}
-static int (*operators[])(int,int) = {add, subtr, mul, div};
+static int (*const operators[])(int, int) = {add, subtr, mul, div};
 static const char oprname[] = "+-*/";
 
 #define NNUMS 10
@@ -38,6 +38,7 @@ void bfs(argopr*, stack*, int*, hist*);
 void nonrecur(operate**, char**, int, uint16_t*);
 
 int main(){
+    // warning: the size of opr[] must be estimated to avoid overflow
     operate opr[200];
     argopr arg[NNUMS][NNUMS]; 
    
@@ -108,8 +109,8 @@ int main(){
     
     printf("\b\b\nsum cost = %d\n\n", sum);
     operate* tmpopr[100];
-    operate* numopr[10];
-    memset(numopr, 0, sizeof(operate*)*10);
+    operate* numopr[NNUMS];
+    memset(numopr, 0, sizeof(operate*)*NNUMS);
     int tmpsize = 0;
     uint16_t this = END;
     while((tmpopr[tmpsize++] = histr[this].opr)){
