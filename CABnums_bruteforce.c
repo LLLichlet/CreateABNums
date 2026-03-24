@@ -3,8 +3,8 @@
 int add(int x, int y){return x+y;}
 int subtr(int x, int y){return x-y;}
 int mul(int x, int y){return x*y;}
-int div(int x, int y){return !y || x%y ? -1: x/y;}
-static int (*const oprfunc[])(int, int) = {add, subtr, mul, div};
+int divs(int x, int y){return !y || x%y ? -1: x/y;}
+static int (*const oprfunc[])(int, int) = {add, subtr, mul, divs};
 static const char oprname[] = "+-*/";
 
 #define NNUMS 10
@@ -26,13 +26,13 @@ typedef struct status{
 } status;
 
 void recur(status*, char**, int);
-void nonrecur(status*, char**, int, unsigned short*);
+void nonrecur(status*, char**, int, unsigned*);
 
 int main(){
-    // warning: the size of opr[] must be estimated to avoid overflow
-    operate opr[200];
-    argopr arg[NNUMS][NNUMS]; 
-   
+    
+    static operate opr[NNUMS*NNUMS*2];
+    static argopr arg[NNUMS][NNUMS];
+
     int nopr = 0;
     int tmp;
 
@@ -117,7 +117,7 @@ int main(){
     }
     printf("\n");
 
-    unsigned short stk[100];
+    unsigned stk[100];
     char str[100];
     char* ptr;
     printf("atomic:\n");
@@ -132,7 +132,7 @@ int main(){
 }
 
 
-// Atomic oprs with expr written to *res.
+// Atomic oprs with expr written to *res
 // Manual null termination is required.
 void recur(status* stat, char** res, int n){
     operate* thisopr;
@@ -150,28 +150,28 @@ void recur(status* stat, char** res, int n){
 // Deprecated non-recursive visit with expr written to *res.
 // Request pre-allocated array stk. Automatic null termination.
 // Why not use the recursive version...???
-void nonrecur(status* stat, char** res, int n, unsigned short* stk){
+void nonrecur(status* stat, char** res, int n, unsigned* stk){
     int sstk = 0;
     stk[sstk++] = n;
     while(1){
-        if(stat[stk[sstk-1] & 0x7fff].parent){
-            stk[sstk] = stat[stk[sstk-1] & 0x7fff].parent->x;
+        if(stat[stk[sstk-1] & 0x7fffffff].parent){
+            stk[sstk] = stat[stk[sstk-1] & 0x7fffffff].parent->x;
             sstk++;
             *(*res)++ = '(';
             continue;
         }
-        *res += sprintf(*res, "%d", stk[--sstk] & 0x7fff);
+        *res += sprintf(*res, "%d", stk[--sstk] & 0x7fffffff);
         right:
         if(!sstk)
             break;
-        if(stk[sstk-1] & 0x8000){
+        if(stk[sstk-1] & 0x80000000){
             *(*res)++ = ')';
             sstk--;
             goto right;
         }
         *res += sprintf(*res, " %c ", oprname[stat[stk[sstk-1]].parent->operator]);
         stk[sstk] = stat[stk[sstk-1]].parent->y;
-        stk[sstk-1] |= 0x8000;
+        stk[sstk-1] |= 0x80000000;
         sstk++;
     }
     *(*res)++ = '\0';
